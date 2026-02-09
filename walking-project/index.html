@@ -1,13 +1,100 @@
 <!DOCTYPE html>
-
 <html>
+  <head>
+    <meta charset="utf-8">
+    <title>Walking Project</title>
 
-    <head>
-        <meta charset="utf-8">
-        <title> Walking Project </title>
-        
-        <!-- Downloading A-Frame here. -->
-         <script src="https://aframe.io/releases/1.7.1/aframe.min.js"></script>
-    </head>
+    <script src="https://aframe.io/releases/1.7.1/aframe.min.js"></script>
 
-    
+    <style>
+      html, body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+
+  <body>
+    <a-scene shadow="type: pcfsoft">
+
+      <!-- camera and flashlight -->
+      <a-entity position="0 1.6 3">
+        <a-camera wasd-controls="acceleration: 7" look-controls>
+          <a-entity
+            light="type: spot; intensity: 10; angle: 20; penumbra: 0.5; castShadow: true">
+          </a-entity>
+        </a-camera>
+      </a-entity>
+
+      <!-- following spotlight  -->
+      <a-entity
+        light="type: spot; intensity: 2; angle: 30; castShadow: true"
+        position="0 8 -5">
+      </a-entity>
+
+      <!--  the parent object -->
+      <!-- This entity rotates, children follow rotation -->
+      <a-entity
+        id="mover"
+        position="0 2 -6"
+        animation="property: rotation; to: 0 360 0; loop: true; dur: 12000; easing: linear">
+
+        <!-- body (parent) -->
+        <a-sphere
+          radius="1"
+          color="#666"
+          shadow="cast: true; receive: true">
+        </a-sphere>
+
+        <!-- child 1 -->
+        <a-box
+          position="2 0 0"
+          depth="0.5"
+          height="0.5"
+          width="0.5"
+          color="#00aaff"
+          shadow="cast: true">
+        </a-box>
+
+        <!-- child 2 -->
+        <a-cone
+          position="-2 0 0"
+          height="1"
+          radius-bottom="0.4"
+          radius-top="0.1"
+          color="#ffaa00"
+          shadow="cast: true">
+        </a-cone>
+
+        <!-- child 3 (moves on its own) -->
+        <a-cylinder
+          position="0 1.8 0"
+          radius="0.2"
+          height="1"
+          color="#ff5555"
+          animation="property: rotation; to: 360 0 0; loop: true; dur: 2000"
+          shadow="cast: true">
+        </a-cylinder>
+
+        <!-- should do: add one more child OR texture -->
+      </a-entity>
+
+      <!-- ground level -->
+      <a-plane
+        width="30"
+        height="30"
+        rotation="-90 0 0"
+        position="0 0 -8"
+        color="#223"
+        shadow="receive: true">
+      </a-plane>
+
+      <!-- sky -->
+      <a-sky color="#002"></a-sky>
+
+      <!-- going to make footsteps / soundeffects -->
+    </a-scene>
+  </body>
+</html>
