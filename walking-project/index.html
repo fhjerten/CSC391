@@ -1,100 +1,122 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>Walking Project</title>
+
+<head>
+    <meta charset ="utf-8">
+    <title> Walking Project with Alien and ship</title>
 
     <script src="https://aframe.io/releases/1.7.1/aframe.min.js"></script>
-
     <style>
-      html, body {
-        width: 100%;
-        height: 100%;
-        margin: 0;
-        overflow: hidden;
-      }
+        html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; }
     </style>
-  </head>
+</head>
 
-  <body>
-    <a-scene shadow="type: pcfsoft">
+<!-- I start the audio on autoplay, so when player clicks music starts and is closer to the ship and alien -->
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    window.addEventListener('click', () => {
+      const ship = document.querySelector('#ship');
+      if (ship?.components.sound) ship.components.sound.playSound();
+    }, { once: true });
+  });
+</script>
 
-      <!-- camera and flashlight -->
-      <a-entity position="0 1.6 3">
-        <a-camera wasd-controls="acceleration: 7" look-controls>
-          <a-entity
-            light="type: spot; intensity: 10; angle: 20; penumbra: 0.5; castShadow: true">
+<body>
+<a-scene shadow="type: pcsoft">
+
+  <!-- For all off the assets: -->
+  <a-assets>
+    <img id="shipTex"  src="pix/textures/alienmetal_albedo.png">
+    <img id="shipNorm" src="pix/textures/alienmetal_normal-ogl.png">
+    <img id="alienTex" src="pix/textures/alienskin_albedo.png">
+    <audio id="alienHover" src="sounds/alien_hover.mp3"></audio>
+  </a-assets>
+
+  <!-- for the camera with a flashlight -->
+  <a-entity camera look-controls wasd-controls="acceleration: 5" position="0 1.6 3">
+    <a-entity light="type: spot; intensity: 3; angle: 25; penumbra: 0.5; castShadow: true"></a-entity>
+  </a-entity>
+
+  <!-- The main lightning of the whole scene -->
+  <a-entity light="type: spot; intensity: 1.2; angle: 45; penumbra: 0.4; castShadow: true"
+            position="0 10 0" rotation="-90 0 0"></a-entity>
+  <a-entity light="type: ambient; intensity: 0.25"></a-entity>
+
+  <!-- The rotation for the alienship -->
+  <a-entity position="0 0 -6"
+    animation="property: rotation; to: 0 360 0; dur: 14000; loop: true">
+
+    <!-- The ship's shadows and its sound -->
+    <a-entity id="ship" position="3.5 2 0"
+      animation="property: rotation; to: 0 360 0; dur: 6000; loop: true"
+      shadow="cast: true"
+      sound="src: #alienHover; loop: true; positional: true; volume: 0.6">
+
+      <!-- How big the ship is -->
+      <a-cylinder radius="1.2" height="0.35"
+        material="shader: flat; src: #shipTex; normalMap: #shipNorm"></a-cylinder>
+
+      <a-sphere radius="0.55" position="0 0.35 0"
+        material="shader: flat; src: #shipTex; normalMap: #shipNorm"></a-sphere>
+
+      <!-- The two headlights on the edge of the ship shining down -->
+      <a-entity position="-0.6 0.1 0.9">
+        <a-sphere radius="0.12" material="emissive: #fff; emissiveIntensity: 2"></a-sphere>
+        <a-entity rotation="-90 0 0"
+          light="type: spot; intensity: 6; angle: 22; penumbra: 0.6; castShadow: true"></a-entity>
+      </a-entity>
+
+      <a-entity position="0.6 0.1 0.9">
+        <a-sphere radius="0.12" material="emissive: #fff; emissiveIntensity: 2"></a-sphere>
+        <a-entity rotation="-90 0 0"
+          light="type: spot; intensity: 6; angle: 22; penumbra: 0.6; castShadow: true"></a-entity>
+      </a-entity>
+
+      <!-- For the alien rotating around the ship -->
+      <a-entity position="0 1.8 0"
+        animation="property: rotation; to: 0 -360 0; dur: 3000; loop: true">
+
+        <!-- The flip -->
+        <a-entity position="1.6 0 0"
+          animation="property: rotation; from: -45 0 0; to: 45 0 0;
+                     dur: 2000; dir: alternate; loop: true; easing: easeInOutSine">
+
+          <!-- The alien's spin -->
+          <a-entity animation="property: rotation; to: 0 360 0; dur: 1500; loop: true"
+            shadow="cast: true">
+
+            <!-- Alien body -->
+            <a-cylinder radius="0.18" height="0.55" material="shader: flat; src: #alienTex"></a-cylinder>
+            <a-sphere radius="0.2" position="0 0.38 0" material="shader: flat; src: #alienTex"></a-sphere>
+
+            <!-- Alien details -->
+            <a-sphere radius="0.04" position="-0.07 0.4 0.17" color="#000"></a-sphere>
+            <a-sphere radius="0.04" position="0.07 0.4 0.17"  color="#000"></a-sphere>
+
+            <a-cylinder radius="0.02" height="0.25" position="-0.08 0.63 0" material="shader: flat; src: #alienTex"></a-cylinder>
+            <a-cylinder radius="0.02" height="0.25" position="0.08 0.63 0"  material="shader: flat; src: #alienTex"></a-cylinder>
+            <a-sphere radius="0.04" position="-0.08 0.78 0" color="#111"></a-sphere>
+            <a-sphere radius="0.04" position="0.08 0.78 0"  color="#111"></a-sphere>
+
+            <!-- Alien legs -->
+            <a-entity position="0 -0.28 0">
+              <a-cylinder radius="0.04" height="0.28" position="-0.07 -0.14 0" material="shader: flat; src: #alienTex"></a-cylinder>
+              <a-cylinder radius="0.04" height="0.28" position="0.07 -0.14 0"  material="shader: flat; src: #alienTex"></a-cylinder>
+            </a-entity>
+
           </a-entity>
-        </a-camera>
+        </a-entity>
       </a-entity>
 
-      <!-- following spotlight  -->
-      <a-entity
-        light="type: spot; intensity: 2; angle: 30; castShadow: true"
-        position="0 8 -5">
-      </a-entity>
+    </a-entity>
+  </a-entity>
 
-      <!--  the parent object -->
-      <!-- This entity rotates, children follow rotation -->
-      <a-entity
-        id="mover"
-        position="0 2 -6"
-        animation="property: rotation; to: 0 360 0; loop: true; dur: 12000; easing: linear">
+  <!-- The ground getting the aliens and the ships shadows -->
+  <a-plane width="18" height="18" rotation="-90 0 0" position="0 0 -6"
+           color="#444" shadow="receive: true"></a-plane>
 
-        <!-- body (parent) -->
-        <a-sphere
-          radius="1"
-          color="#666"
-          shadow="cast: true; receive: true">
-        </a-sphere>
+  <a-sky color="#02050a"></a-sky>
 
-        <!-- child 1 -->
-        <a-box
-          position="2 0 0"
-          depth="0.5"
-          height="0.5"
-          width="0.5"
-          color="#00aaff"
-          shadow="cast: true">
-        </a-box>
-
-        <!-- child 2 -->
-        <a-cone
-          position="-2 0 0"
-          height="1"
-          radius-bottom="0.4"
-          radius-top="0.1"
-          color="#ffaa00"
-          shadow="cast: true">
-        </a-cone>
-
-        <!-- child 3 (moves on its own) -->
-        <a-cylinder
-          position="0 1.8 0"
-          radius="0.2"
-          height="1"
-          color="#ff5555"
-          animation="property: rotation; to: 360 0 0; loop: true; dur: 2000"
-          shadow="cast: true">
-        </a-cylinder>
-
-        <!-- should do: add one more child OR texture -->
-      </a-entity>
-
-      <!-- ground level -->
-      <a-plane
-        width="30"
-        height="30"
-        rotation="-90 0 0"
-        position="0 0 -8"
-        color="#223"
-        shadow="receive: true">
-      </a-plane>
-
-      <!-- sky -->
-      <a-sky color="#002"></a-sky>
-
-      <!-- going to make footsteps / soundeffects -->
-    </a-scene>
-  </body>
+</a-scene>
+</body>
 </html>
